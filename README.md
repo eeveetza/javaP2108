@@ -1,14 +1,18 @@
-# Java Implementation of Recommendation ITU-R P.2108-1
+# Java Implementation of Recommendation ITU-R P.2108
 
-This code repository contains a Java software implementation of Recommendation [ITU-R P.2108-1](https://www.itu.int/rec/R-REC-P.2108/en) with a prediction procedure for  estimating loss through clutter at frequencies between 30 MHz and 100 GHz.  
+This code repository contains a Java software implementation of of draft revision of Recommendation [ITU-R P.2108-2](https://www.itu.int/md/meetingdoc.asp?lang=en&parent=R23-SG03-C-0041) with a prediction procedure for  estimating loss through clutter at frequencies between 30 MHz and 100 GHz.  
 
-This version of the code is functionally identical to the reference version approved by ITU-R Working Parties 3K and 3M and published by Study Group 3 on [ITU-R SG 3 Software, Data, and Validation Web Page](https://www.itu.int/en/ITU-R/study-groups/rsg3/Pages/iono-tropo-spheric.aspx). This version of the code is also implemented in [SEAMCAT](https://seamcat.org).
+This version of the code implements the newly developped Earth-space and aeronautical statistical clutter loss model of section 3.3.  
+
+<!-- This version of the code is functionally identical to the reference version approved by ITU-R Working Parties 3K and 3M and published by Study Group 3 on [ITU-R SG 3 Software, Data, and Validation Web Page](https://www.itu.int/en/ITU-R/study-groups/rsg3/Pages/iono-tropo-spheric.aspx). 
+
+This version of the code is also implemented in [SEAMCAT](https://seamcat.org).-->
 
 The following table describes the structure of the folder `./src/` containing the Java implementation of Recommendation ITU-R P.2108.
 
 | File/Folder               | Description                                                         |
 |----------------------------|---------------------------------------------------------------------|
-|`main/P2108.java`                | Java class implementing Recommendation ITU-R P.2108-1          |
+|`main/P2108.java`                | Java class implementing Recommendation ITU-R P.2108-1 and section 3.3 of    draft revision of Recommendation [ITU-R P.2108-2](https://www.itu.int/md/meetingdoc.asp?lang=en&parent=R23-SG03-C-0041)        |
 |`test/P2108Test.java`          | Java class implementing validation tests against the reference Excel implementation of this Recommendation for a range of location percentages, frequencies, distances and environment categories.          |
 
 ## Functions
@@ -38,15 +42,18 @@ Lc = cl_loss2( f, d, p);
 | `p`           | scalar double    | %     |     0 < p < 100     |  Percentage of locations|
 
 
-## 3.  Earth-space and Aeronautical statistical clutter loss model  §3.3
+## 3.   Earth-space and Aeronautical statistical clutter loss model  §3.3
 ~~~
-Lc = cl_loss3( f, th, p);
+Lc = cl_loss3(f, th, p, h, hm);
 ~~~
 | Variable          | Type   | Units | Limits       | Description  |
 |-------------------|--------|-------|--------------|--------------|
-| `f`               | scalar double | GHz   | 10 ≤ `f` ≤ 100 | Frequency   |
+| `f`               | scalar double | GHz   | 0.5 ≤ `f` ≤ 100 | Frequency   |
 | `th`          | scalar double | deg   | 0 ≤ `th` ≤ 90  | Elevation angle|
 | `p`           | scalar double    | %     |     0 < p < 100     |  Percentage of locations|
+| `h`           | scalar double    | m     |     h ≥  1     |  Ground station height|
+| `hm`           | scalar double    | m     |          |  Median clutter height <ul><li> Low-rise: `hm ≤ 8` </li> <li> Mid-rise: `8 < hm ≤ 20`</li> <li> High-rise: `hm > 20` </li></ul> |
+
 
  ## Outputs ##
 
@@ -57,6 +64,8 @@ Lc = cl_loss3( f, th, p);
 ## References
 
 * [Recommendation ITU-R P.2108](https://www.itu.int/rec/R-REC-P.2108/en)
+
+* [Draft revision of Recommendation ITU-R P.2108-2](https://www.itu.int/md/meetingdoc.asp?lang=en&parent=R23-SG03-C-0041) 
 
 * [ITU-R SG 3 Software, Data, and Validation Web Page](https://www.itu.int/en/ITU-R/study-groups/rsg3/Pages/iono-tropo-spheric.aspx)
 

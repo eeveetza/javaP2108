@@ -7,7 +7,9 @@ import org.junit.Test;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 
 public class P2108Test {
@@ -29,7 +31,7 @@ public class P2108Test {
     }
 
     @Test
-    public void test1() {
+    public void test01() {
         P2108 calculator = new P2108();
         double f = 1.500000;
         double h = 2.000000;
@@ -44,7 +46,7 @@ public class P2108Test {
 
     @Test
 
-    public void test2() {
+    public void test02() {
         P2108 calculator = new P2108();
         double f = 1.500000;
         double h = 2.000000;
@@ -59,7 +61,7 @@ public class P2108Test {
 
     @Test
 
-    public void test3() {
+    public void test03() {
         P2108 calculator = new P2108();
         double f = 1.500000;
         double h = 2.000000;
@@ -74,7 +76,7 @@ public class P2108Test {
 
     @Test
 
-    public void test4() {
+    public void test04() {
         P2108 calculator = new P2108();
         double f = 1.500000;
         double h = 2.000000;
@@ -89,7 +91,7 @@ public class P2108Test {
 
     @Test
 
-    public void test5() {
+    public void test05() {
         P2108 calculator = new P2108();
         double f = 1.500000;
         double h = 2.000000;
@@ -104,7 +106,7 @@ public class P2108Test {
 
     @Test
 
-    public void test6() {
+    public void test06() {
         P2108 calculator = new P2108();
         double f = 1.500000;
         double h = 2.000000;
@@ -119,7 +121,7 @@ public class P2108Test {
 
     @Test
 
-    public void test7() {
+    public void test07() {
         P2108 calculator = new P2108();
         double f = 1.500000;
         double h = 2.000000;
@@ -134,7 +136,7 @@ public class P2108Test {
 
     @Test
 
-    public void test8() {
+    public void test08() {
         P2108 calculator = new P2108();
         double f = 1.500000;
         double h = 2.000000;
@@ -149,7 +151,7 @@ public class P2108Test {
 
     @Test
 
-    public void test9() {
+    public void test09() {
         P2108 calculator = new P2108();
         double f = 1.500000;
         double h = 2.000000;
@@ -601,6 +603,114 @@ public class P2108Test {
         }
 
 
+    }
+
+    @Test
+    public void test13() {
+        TestUtil utilLt    = new TestUtil(2.5);
+
+        P2108 calculator = new P2108();
+        int sizeY = 0;
+
+        List<String> lines_r = new ArrayList<>();
+        String file_rel_r = "src/test/validation_examples/validation_example_p2108_3_2ray.csv";
+        //System.out.println(file_rel_r);
+
+        // read all the lines from the profile
+        try {
+
+            InputStream inputStream_r = new FileInputStream(file_rel_r);
+
+            // read the reference results next
+
+
+            InputStreamReader inputStreamReader_r = new InputStreamReader(inputStream_r);
+            BufferedReader br_r = new BufferedReader(inputStreamReader_r);
+            String line_r;
+            while (null != (line_r = br_r.readLine())) {
+
+                lines_r.add(line_r);
+            }
+
+            sizeY = lines_r.size();
+            inputStream_r.close();
+
+            // Tolerances
+            double Lt_tol    = 2.5;
+            double sigma_tol = 0.5;
+
+            // --- Read header to extract Ntot ---
+            String[] header = lines_r.get(0).trim().split(",");
+            int Ntot = (int) Double.parseDouble(header[header.length - 1]);
+
+            Random rng = new Random();
+
+            for (int i = 1; i < sizeY; i++) { /* DO */
+
+                String[] parts = lines_r.get(i).trim().split(",");
+
+                double f = Double.parseDouble(parts[0]);
+                double theta = Double.parseDouble(parts[1]);
+
+                double h = Double.parseDouble(parts[2]);
+                double hm = Double.parseDouble(parts[3]);
+                double Gt_cld = Double.parseDouble(parts[4]);
+                double Gt_clg = Double.parseDouble(parts[5]);
+                double Gr = Double.parseDouble(parts[6]);
+                double Lb = Double.parseDouble(parts[7]);
+                double Lt_ref = Double.parseDouble(parts[8]);
+                double sigma_ref = Double.parseDouble(parts[9]);
+
+                double[] L = new double[Ntot];
+
+                for (int ii = 0; ii < Ntot; ii++) {
+                    double p = 100.0 * rng.nextDouble();
+                    L[ii] = calculator.tl_p2108_3_2ray(f, theta, p, h, hm,
+                            Gt_cld, Gt_clg, Gr, Lb);
+                }
+
+                double Lt    = median(L);
+                double sigma = stdDev(L);
+
+                utilLt.assertDoubleEquals(Lt, Lt_ref);
+
+            }
+
+        } catch (Exception ex) {
+
+            throw new IllegalArgumentException("Could not load the file: '" + file_rel_r + "'");
+        }
+    }
+
+    // ---------------------------------------------------------------------------
+// Helper: median of a double array
+// ---------------------------------------------------------------------------
+    private static double median(double[] values) {
+        double[] sorted = Arrays.copyOf(values, values.length);
+        Arrays.sort(sorted);
+        int n = sorted.length;
+        if (n % 2 == 0) {
+            return (sorted[n / 2 - 1] + sorted[n / 2]) / 2.0;
+        } else {
+            return sorted[n / 2];
+        }
+    }
+
+    // ---------------------------------------------------------------------------
+// Helper: population-based sample standard deviation (ddof = 1, like MATLAB std)
+// ---------------------------------------------------------------------------
+    private static double stdDev(double[] values) {
+        int n = values.length;
+        if (n < 2) return 0.0;
+        double mean = 0.0;
+        for (double v : values) mean += v;
+        mean /= n;
+        double sumSq = 0.0;
+        for (double v : values) {
+            double diff = v - mean;
+            sumSq += diff * diff;
+        }
+        return Math.sqrt(sumSq / (n - 1));  // ddof=1, matching MATLAB's std()
     }
 
 }

@@ -405,8 +405,182 @@ public class P2108 {
         double D1 = 1.432788;
         double D2 = 0.189269;
         double D3 = 0.001308;
-        double outC = (((C2 * T(z) + C1) * T(z)) + C0) / (((D3 * T(z) + D2) * T(z) + D1) * T(z) + 1);//(39d)
-        return outC;
+        return (((C2 * T(z) + C1) * T(z)) + C0) / (((D3 * T(z) + D2) * T(z) + D1) * T(z) + 1);//(39d)
+    }
+
+    /**
+     * tl_p2108_3_2ray
+     *
+     * Computes the transmission loss including clutter loss as defined in
+     * ITU-R P.2108 (Section 3.3) for Earth to Space and Aeronautical paths
+     * using guidance in Attachment of Document 5D/629 for 2-ray approximation.
+     *
+     * @param f       Frequency (GHz): 0.5 <= f <= 100
+     * @param theta   Elevation angle from ground station to elevated station (deg): 0 <= theta <= 90
+     * @param p       Percentage of locations (%): 0 < p < 100
+     * @param h       Ground station height (m): h >= 1
+     * @param hm      Median clutter height (m)
+     * @param Gt_cld  Gain of transmitter towards receiver along direct path (dBi)
+     * @param Gt_clg  Gain of transmitter towards receiver along ground-reflected path (dBi)
+     * @param Gr      Gain of satellite/aircraft receiver in direction of transmitter (dBi)
+     * @param Lb      Basic transmission loss (dB), without clutter or ground reflection
+     * @return        Lt - Transmission loss between Earth and Space/Aeronautical stations (dB)
+     *
+     * Rev   Date        Author                          Description
+     * ---------------------------------------------------------------------------------
+     * v0    20MAR26     Ivica Stevanovic, OFCOM         Initial version
+     *
+     */
+    public double tl_p2108_3_2ray(double f, double theta, double p, double h, double hm,
+                                  double Gt_cld, double Gt_clg, double Gr, double Lb) {
+
+        // Compute the probability of locations with FcLoS
+        double pFcLoS = pFcLoS_p2108_3(f, theta, h, hm);
+
+        // Draw a random beta ~ N(17, 6)
+        double beta = 17.0 + 6.0 * new java.util.Random().nextGaussian();
+
+        // Clutter loss along the direct path
+        double Lcld;
+        if (p <= pFcLoS) {
+            Lcld = 0.0;
+        } else {
+            // FoLoS or NLoS
+            Lcld = cl_loss3(f, theta, p, h, hm);
+        }
+
+        // Additional clutter loss of the secondary (ground-reflected) path
+        double Lclg = Lcld + Math.max(0.0, beta);
+
+        // Transform dB values into linear units
+        double lcld  = Math.pow(10.0, Lcld   / 10.0);
+        double lclg  = Math.pow(10.0, Lclg   / 10.0);
+        double gt_cld = Math.pow(10.0, Gt_cld / 10.0);
+        double gt_clg = Math.pow(10.0, Gt_clg / 10.0);
+        double gr    = Math.pow(10.0, Gr     / 10.0);
+        double loss  = Math.pow(10.0, Lb     / 10.0);
+
+        // Transmission loss accounting for all link loss factors
+        double lt = (gt_cld / lcld + gt_clg / lclg) * gr / loss;
+
+        // Transform back to dB
+        return -10.0 * Math.log10(lt);
+    }
+
+    /**
+     * pFcLoS_p2108_3
+     *
+     * Computes the probability of Fresnel zone clearance as defined in
+     * ITU-R P.2108 (Section 3.3) for Earth to Space and Aeronautical paths.
+     *
+     * @param f      Frequency (GHz): 0.5 <= f <= 100
+     * @param theta  Elevation angle (degrees): 0 <= theta <= 90
+     * @param h      Ground station height (m): h >= 1
+     * @param hm     Median clutter height (m)
+     * @return       pFcLoS - Probability of Fresnel zone clearance
+     *
+     * Rev   Date        Author                          Description
+     * ---------------------------------------------------------------------------------
+     * v0    20MAR26     Ivica Stevanovic, OFCOM         Initial version
+     */
+    public double pFcLoS_p2108_3(double f, double theta, double h, double hm) {
+
+        // Table 7: pLoS parameters for equations (7) and (8)
+        double ak, bk, ck, aC, bC, aV, bV;
+
+        if (hm <= 8.0) {
+            // Low-rise
+            ak =  4.9;
+            bk =  6.7;
+            ck =  2.6;
+            aC =  0.19;
+            bC =  0.0;
+            aV =  1.4;
+            bV = 74.0;
+        } else if (hm <= 20.0) {
+            // Mid-rise
+            ak = -2.6;
+            bk =  6.6;
+            ck =  2.0;
+            aC =  0.42;
+            bC = -6.7;
+            aV =  0.15;
+            bV = 97.0;
+        } else {
+            // High-rise
+            ak =  2.4;
+            bk =  7.0;
+            ck =  1.0;
+            aC =  0.19;
+            bC = -2.7;
+            aV =  0.15;
+            bV = 98.0;
+        }
+
+        // Table 8: pLoS parameters for equations (9) and (10)
+        double akp, bkp, aCp, bC1p, bC2p, bC3p, bC4p, cCp, aVp, bVp;
+
+        if (hm <= 8.0) {
+            // Low-rise
+            akp  =  6.0;
+            bkp  =  0.07;
+            aCp  =  0.15;
+            bC1p =  5.4;
+            bC2p = -0.3;
+            bC3p =  3.2;
+            bC4p =  0.07;
+            cCp  = -27.0;
+            aVp  =  1.6;
+            bVp  = -17.0;
+        } else if (hm <= 20.0) {
+            // Mid-rise
+            akp  =  3.6;
+            bkp  =  0.05;
+            aCp  =  0.17;
+            bC1p = 13.0;
+            bC2p = -0.2;
+            bC3p =  3.7;
+            bC4p =  0.05;
+            cCp  = -41.0;
+            aVp  =  1.0;
+            bVp  = -21.0;
+        } else {
+            // High-rise
+            akp  =  5.0;
+            bkp  =  0.003;
+            aCp  =  0.17;
+            bC1p = 32.6;
+            bC2p =  0.012;
+            bC3p = -23.9;
+            bC4p = -0.07;
+            cCp  = -41.0;
+            aVp  =  1.0;
+            bVp  = -18.0;
+        }
+
+        // LoS probability (eq. 7-8)
+        double Vmax = Math.min(aV * h + bV, 100.0);
+        double Ce   = aC * h + bC;
+        double k    = Math.pow((h + ak) / bk, ck);
+        double pLoS = Math.max(0.0,
+                Vmax * (1.0 - Math.exp(-k * (theta + Ce) / 90.0))
+                        / (1.0 - Math.exp(-k * (90.0 + Ce)  / 90.0)));
+
+        // Conditional probability of Fresnel zone clearance (eq. 9-10)
+        double Vmaxp      = Math.min(aVp * h + bVp, 0.0) * Math.pow(f, -0.55) + 100.0;
+        double Cep        = Math.pow(f * 1e9, aCp)
+                + bC1p * Math.exp(bC2p * h)
+                + bC3p * Math.exp(bC4p * h)
+                + cCp;
+        double kp         = akp * Math.exp(bkp * h);
+        double pFcLoS_LoS = Math.max(0.0,
+                Vmaxp * (1.0 - Math.exp(-kp * (theta + Cep) / 90.0))
+                        / (1.0 - Math.exp(-kp * (90.0 + Cep)  / 90.0)));
+
+        // Probability of a link being Fresnel clear (eq. 11)
+        double pFcLoS = pLoS * pFcLoS_LoS / 100.0;
+
+        return pFcLoS;
     }
 
 }

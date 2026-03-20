@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89d17b79-eae2-45be-9ab4-063706508e13" name="Default" comment="" />
+    <list default="true" id="89d17b79-eae2-45be-9ab4-063706508e13" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/src/test/validation_examples/validation_example_p2108_3_2ray.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/P2108.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/P2108.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/P2108Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/P2108Test.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -65,12 +71,19 @@
       </file>
     </leaf>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
   <component name="ProjectFrameBounds">
     <option name="x" value="390" />
     <option name="y" value="302" />
     <option name="width" value="1614" />
     <option name="height" value="919" />
   </component>
+  <component name="ProjectId" id="3BDvd7Xg8kw3PXJqMlfc4XFaG5W" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -118,14 +131,30 @@
       <pane id="Scope" />
     </panes>
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "JUnit.P2108Test.executor": "Run",
+    "JUnit.P2108Test.test13.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "dev",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/eeveetza/OFCOM/GitHub/javaP2108/src/test/validation_examples",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/validation_examples" />
+    </key>
+  </component>
   <component name="RunManager" selected="JUnit.P2108Test">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
@@ -162,14 +191,32 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="P2108Test.test13" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="javaP2108" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="test" />
+      <option name="MAIN_CLASS_NAME" value="test.P2108Test" />
+      <option name="METHOD_NAME" value="test13" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.Main" />
+      <item itemvalue="JUnit.P2108Test.test13" />
       <item itemvalue="JUnit.P2108Test" />
       <item itemvalue="JUnit.All in javaP2108" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.P2108Test" />
+        <item itemvalue="JUnit.P2108Test.test13" />
         <item itemvalue="JUnit.All in javaP2108" />
       </list>
     </recent_temporary>

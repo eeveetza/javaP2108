@@ -54,6 +54,21 @@ Lc = cl_loss3(f, th, p, h, hm);
 | `h`           | scalar double    | m     |     h ≥  1     |  Ground station height|
 | `hm`           | scalar double    | m     |          |  Median clutter height <ul><li> Low-rise: `hm ≤ 8` </li> <li> Mid-rise: `8 < hm ≤ 20`</li> <li> High-rise: `hm > 20` </li></ul> |
 
+## 3.1.  Transmission loss including the clutter loss as defined in Section 3.3 using guidance in Attachment of Document 5D/629 for 2 ray approximation
+~~~
+Lt = tl_p2108_3_2ray(f, theta, p, h, hm, Gt_cld, Gt_clg, Gr, Lb);
+~~~
+| Variable          | Type   | Units | Limits       | Description  |
+|-------------------|--------|-------|--------------|--------------|
+| `f`               | scalar double | GHz   | 0.5 ≤ `f` ≤ 100 | Frequency   |
+| `th`          | scalar double | deg   | 0 ≤ `th` ≤ 90  | Elevation angle|
+| `p`           | scalar double    | %     |     0 < p < 100     |  Percentage of locations|
+| `h`           | scalar double    | m     |     h ≥  1     |  Ground station height|
+| `hm`           | scalar double    | m     |          |  Median clutter height <ul><li> Low-rise: `hm ≤ 8` </li> <li> Mid-rise: `8 < hm ≤ 20`</li> <li> High-rise: `hm > 20` </li></ul> |
+| `Gt_cld`     | scalar double | dBi |       | Gain of the transmitter towards the receiver along the direct path (theta, phi)  |
+| `Gt_clg`     | scalar double | dBi |       | Gain of the transmitter towards the receiver along the path with a ground reflection (-theta, phi) |
+| `Gr`     | scalar double | dBi |       | Gain of the satellite or aircraft receiver in the direction of the transmitter (dBi) |
+| `Lb`     | scalar double | dB |   `Lb≥  0`      |   Basic transmission loss between transmitter and the receiver computed using a propagation model that does not have clutter loss included and does not have a ground reflection path considered|
 
  ## Outputs ##
 
@@ -70,3 +85,4 @@ Lc = cl_loss3(f, th, p, h, hm);
 * [ITU-R SG 3 Software, Data, and Validation Web Page](https://www.itu.int/en/ITU-R/study-groups/rsg3/Pages/iono-tropo-spheric.aspx)
 
 * [SEAMCAT - Spectrum Engineering Advanced Monte Carlo Analysis Tool](https://seamcat.org)
+* [Document 5D/629](https://www.itu.int/dms_ties/itu-r/md/23/wp5d/c/R23-WP5D-C-0629!!MSW-E.docx)
